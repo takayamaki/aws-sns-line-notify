@@ -1,0 +1,5 @@
+region: "some where of AWS region"
+snsTopicName: "snsTopicName(It will create by serverless))"
+daysOfLogExpire: "How long days until cloudwatch logs expiration"
+lineNotifyToken: "your personal token"
+notificationLevel: "Notification level(ex. info, warn, alart...)"

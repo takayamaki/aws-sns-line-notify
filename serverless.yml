@@ -1,0 +1,31 @@
+service: aws-sns-line-notify
+provider:
+  name:    aws
+  runtime: nodejs8.10
+  stage:   ${opt:stage, 'dev'}
+  region:  ${self:custom.config.region}
+  logRetentionInDays: ${self:custom.config.daysOfLogExpire}
+
+functions:
+  notify:
+    name:    ${self:custom.config.snsTopicName}_${self:provider.stage}_notifier
+    handler: handler.notify
+    events:
+      - sns: ${self:custom.config.snsTopicName}_${self:provider.stage}_sns_topic
+    environment:
+      lineNotifyToken: ${self:custom.config.lineNotifyToken}
+      notificationLevel: ${self:custom.config.notificationLevel}
+
+plugins:
+  - serverless-webpack
+  - serverless-prune-plugin
+
+custom:
+  config: ${file(config/${self:provider.stage}.yml)}
+  prune:
+    automatic: true
+    number: 3
+  webpack:
+    packager:       'yarn'
+    webpackConfig:  ./webpack.config.js
+    includeModules: true
